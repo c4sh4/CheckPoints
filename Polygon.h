@@ -106,10 +106,11 @@ int check(Vec &a, Vec &b, Vec &c) {
 
 
 bool Polygon::Algorithm(Polygon &p, std::vector<Vec> &dots) {
+    //std::cout << p.n_vertex << " " << p.vertex.size() << std::endl;
     Vec lv = p.left_vertex(p);
-    //std::cout << "lv is: " << lv << std::endl;
-    //std::cout << "Algorithm in" << std::endl;
+    //std::cout << p.n_vertex << " " << p.vertex.size() << std::endl;
     std::vector<double> pc = polar_coord(p.vertex, lv);
+    //std::cout << pc.size() << std::endl;
     //std::cout << "dots polar vector: " << std::endl;
     std::vector<double> pd = polar_coord(dots, lv);
     for (int d = 0; d < pd.size(); ++d) {
@@ -117,25 +118,31 @@ bool Polygon::Algorithm(Polygon &p, std::vector<Vec> &dots) {
         //std::cout << pd[d] << " " << dots[d] << std::endl;
         int pos = ceilSearch(pc, 0, pc.size(), pd[d]);
         if (pos == -1) {
+            //std::cout << p.vertex[pos] <<" " <<p.vertex[pos+1] <<" " << dots[d] << std::endl;
+            //std::cout << pc[pos] << " ! " << pc[pos+1] << " " << pc[d] << std::endl;
             std::cout << "(" << dots[d] <<") " << "out" << std::endl;
         } else {
-            int pos_ = pos + 1;
+            int pos_ = pos;
+            pos -= 1;
             //std::cout << n_vertex << std::endl;
             //std::cout << p.vertex[n_vertex] << std::endl;
             //std::cout << "pos is: " << pos << std::endl;
-
             //std::cout << "pos_ is: " << pos_ << std::endl;
             //std::cout << p.vertex[pos] << " ; " << p.vertex[pos_] << std::endl;
             if (pos_ != p.n_vertex) {
                 //std::cout << p.vertex[pos] <<" " <<p.vertex[pos_] <<" " << dots[d] << std::endl;
                 if (check(p.vertex[pos], p.vertex[pos_], dots[d]) >= 0) {
+                    //std::cout << p.vertex[pos-1] <<" " <<p.vertex[pos_-1] <<" " << dots[d] << std::endl;
+                    //std::cout << p.vertex[pos] <<" " <<p.vertex[pos_] <<" " << dots[d] << std::endl;
+                    //std::cout << pc[pos] << " ! " << pc[pos_] << " " << pc[d] << std::endl;
                     std::cout << "(" << dots[d] << ") " << "in" << std::endl;
                 } else {
-                    //std::cout << p.vertex[pos-1] <<" " <<p.vertex[pos_-1] <<" " << dots[d] << std::endl;
-                    //std::cout << pc[pos-1] << " ! " << pc[pos_-1] << " " << pc[d];
+                    //std::cout << p.vertex[pos] <<" " <<p.vertex[pos_] <<" " << dots[d] << std::endl;
+                    //std::cout << pc[pos] << " ! " << pc[pos_] << " " << pc[d] << std::endl;
                     std::cout << "(" << dots[d] << ") " << "out" << std::endl;
                 }
         } else {
+                //std::cout << "priv" << std::endl;
                 if (check(p.vertex[pos], lv, dots[d]) >= 0) {
                     std::cout << "(" << dots[d] << ") " << "in" << std::endl;
                 } else {
@@ -153,7 +160,7 @@ int Polygon::ceilSearch(std::vector<double> arr, int low, int high, double x) {
         return -1;
     }
     int mid;
-    while (low < high) {
+    while (low <= high) {
         mid = low + (high - low) / 2;
         if (arr[mid] == x)
             return mid;
@@ -172,7 +179,7 @@ int Polygon::ceilSearch(std::vector<double> arr, int low, int high, double x) {
     std::cout << "+2 " << arr[low+2] << std::endl;
     std::cout << " LOW IS: " << low << " " << high << std::endl;
      */
-    return low-1;
+    return low;
 }
 
 

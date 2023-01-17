@@ -29,9 +29,5 @@ int main() {
     std::vector<Vec> dots2;
     dots2.emplace_back(Vec(-4,-6));
     pol.Algorithm(pol, dots);
-    /*
-    for (int y=0;y<pol.vertex.size(); ++y){
-        std::cout << y << ") " << pol.vertex[y] << std::endl;
-    }*/
     return 0;
 }
