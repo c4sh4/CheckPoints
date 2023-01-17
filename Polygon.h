@@ -12,9 +12,12 @@ struct Vec {
     double x, y;
     Vec();
     Vec(double x, double y);
-    //~Vec();
+    ~Vec();
     double polar_coord_for_dot(Vec &dot, Vec &lv);
 };
+
+
+Vec::~Vec(){}
 
 
 std::ostream &operator<<(std::ostream &s, Vec &vec) {
@@ -36,13 +39,14 @@ public:
     std::vector<Vec> vertex;
     Polygon();
     Polygon(int n, std::vector<Vec> vertexes);
-    //~Polygon();
+    ~Polygon();
     Vec left_vertex(Polygon &p);
     std::vector<double> polar_coord(std::vector<Vec> &p, Vec &lv);
     int ceilSearch(std::vector<double> arr, int low, int high, double x);
     bool Algorithm(Polygon &p, std::vector<Vec> &dots);
 };
 
+Polygon::~Polygon() { }
 
 Vec::Vec() : x(), y() {}
 
@@ -100,7 +104,7 @@ double Vec::polar_coord_for_dot(Vec &dot, Vec &lv) {
 }
 
 
-int check(Vec &a, Vec &b, Vec &c) {
+double check(Vec &a, Vec &b, Vec &c) {
     return a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y);
 }
 
@@ -129,7 +133,12 @@ bool Polygon::Algorithm(Polygon &p, std::vector<Vec> &dots) {
             //std::cout << "pos is: " << pos << std::endl;
             //std::cout << "pos_ is: " << pos_ << std::endl;
             //std::cout << p.vertex[pos] << " ; " << p.vertex[pos_] << std::endl;
-            if (pos < p.n_vertex ) {
+            //std::cout << pc[pos] << " ; " << pc[pos_] << "; " << pd[d] << std::endl;
+            //std::cout << pos << " " << pos_ << std::endl;
+            if (pos <= 0 || pos > p.n_vertex){
+                std::cout << pos << std::endl;
+            }
+            if (pos_ < p.n_vertex) {
                 //std::cout << p.vertex[pos] <<" " <<p.vertex[pos_] <<" " << dots[d] << std::endl;
                 if (check(p.vertex[pos], p.vertex[pos_], dots[d]) >= 0) {
                     //std::cout << p.vertex[pos-1] <<" " <<p.vertex[pos_-1] <<" " << dots[d] << std::endl;
