@@ -129,11 +129,12 @@ bool Polygon::Algorithm(Polygon &p, std::vector<Vec> &dots) {
             //std::cout << "pos is: " << pos << std::endl;
             //std::cout << "pos_ is: " << pos_ << std::endl;
             //std::cout << p.vertex[pos] << " ; " << p.vertex[pos_] << std::endl;
-            if (pos_ != p.n_vertex) {
+            if (pos < p.n_vertex ) {
                 //std::cout << p.vertex[pos] <<" " <<p.vertex[pos_] <<" " << dots[d] << std::endl;
                 if (check(p.vertex[pos], p.vertex[pos_], dots[d]) >= 0) {
                     //std::cout << p.vertex[pos-1] <<" " <<p.vertex[pos_-1] <<" " << dots[d] << std::endl;
                     //std::cout << p.vertex[pos] <<" " <<p.vertex[pos_] <<" " << dots[d] << std::endl;
+                    //std::cout << pos << " ! " <<pos_ << " " << pc[d] << std::endl;
                     //std::cout << pc[pos] << " ! " << pc[pos_] << " " << pc[d] << std::endl;
                     std::cout << "(" << dots[d] << ") " << "in" << std::endl;
                 } else {
