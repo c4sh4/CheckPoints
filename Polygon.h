@@ -13,7 +13,6 @@ struct Vec {
     Vec();
     Vec(double x, double y);
     ~Vec();
-    double polar_coord_for_dot(Vec &dot, Vec &lv);
 };
 
 
@@ -42,8 +41,10 @@ public:
     ~Polygon();
     Vec left_vertex(Polygon &p);
     std::vector<double> polar_coord(std::vector<Vec> &p, Vec &lv);
-    int ceilSearch(std::vector<double> arr, int low, int high, double x);
     bool Algorithm(Polygon &p, std::vector<Vec> &dots);
+    double polar_coord_for_dot(Vec &dot, Vec &lv);
+
+    int ceilSearch(Polygon &arr, int low, int high, Vec &x, Vec &l);
 };
 
 Polygon::~Polygon() { }
@@ -73,7 +74,6 @@ Vec Polygon::left_vertex(Polygon &p) {
             i_id = i;
         }
     }
-    // delete the lv from vector:
     rotate(p.vertex.begin(), p.vertex.begin() + i_id, p.vertex.end());
     p.vertex.erase(p.vertex.begin());
     p.n_vertex -= 1;
@@ -88,20 +88,18 @@ std::vector<double> Polygon::polar_coord(std::vector<Vec> &p, Vec &lv) {
         a_b[i].x = p[i].x - lv.x;
         a_b[i].y = p[i].y - lv.y;
         coord[i] = atan2(a_b[i].y, a_b[i].x);
-        //std::cout << p[i].x << ", " << p[i].y << " polar: " << coord[i] << std::endl;
     }
     return coord;
 }
 
 
-double Vec::polar_coord_for_dot(Vec &dot, Vec &lv) {
-    Vec pd;
-    double res;
-    pd.x = dot.x - lv.x;
-    pd.y = dot.y - lv.y;
-    res = atan2(pd.y, pd.x);
-    return res;
+double Polygon::polar_coord_for_dot(Vec &dot, Vec &lv) {
+    double pd;
+    Vec td(dot.x - lv.x, dot.y - lv.y);
+    pd = atan2(td.y, td.x);
+    return pd;
 }
+
 
 
 double check(Vec &a, Vec &b, Vec &c) {
@@ -110,17 +108,9 @@ double check(Vec &a, Vec &b, Vec &c) {
 
 
 bool Polygon::Algorithm(Polygon &p, std::vector<Vec> &dots) {
-    //std::cout << p.n_vertex << " " << p.vertex.size() << std::endl;
-    Vec lv = p.left_vertex(p);
-    //std::cout << p.n_vertex << " " << p.vertex.size() << std::endl;
-    std::vector<double> pc = polar_coord(p.vertex, lv);
-    //std::cout << pc.size() << std::endl;
-    //std::cout << "dots polar vector: " << std::endl;
-    std::vector<double> pd = polar_coord(dots, lv);
-    for (int d = 0; d < pd.size(); ++d) {
-        //std::cout << "in for " << std::endl;
-        //std::cout << pd[d] << " " << dots[d] << std::endl;
-        int pos = ceilSearch(pc, 0, pc.size(), pd[d]);
+    Vec lv = p.left_vertex(p); // N
+    for (int d = 0; d < dots.size(); ++d) {
+        int pos = ceilSearch(p, 0, p.vertex.size(), dots[d], lv);
         if (pos == -1) {
             //std::cout << p.vertex[pos] <<" " <<p.vertex[pos+1] <<" " << dots[d] << std::endl;
             //std::cout << pc[pos] << " ! " << pc[pos+1] << " " << pc[d] << std::endl;
@@ -135,9 +125,6 @@ bool Polygon::Algorithm(Polygon &p, std::vector<Vec> &dots) {
             //std::cout << p.vertex[pos] << " ; " << p.vertex[pos_] << std::endl;
             //std::cout << pc[pos] << " ; " << pc[pos_] << "; " << pd[d] << std::endl;
             //std::cout << pos << " " << pos_ << std::endl;
-            if (pos <= 0 || pos > p.n_vertex){
-                std::cout << pos << std::endl;
-            }
             if (pos_ < p.n_vertex) {
                 //std::cout << p.vertex[pos] <<" " <<p.vertex[pos_] <<" " << dots[d] << std::endl;
                 if (check(p.vertex[pos], p.vertex[pos_], dots[d]) >= 0) {
@@ -164,31 +151,31 @@ bool Polygon::Algorithm(Polygon &p, std::vector<Vec> &dots) {
 }
 
 
-int Polygon::ceilSearch(std::vector<double> arr, int low, int high, double x) {
+int Polygon::ceilSearch(Polygon& arr, int low, int high, Vec& x, Vec& l) {
 
-    if (x < arr[low]) {
+    //std::cout << "x " << x << std::endl;
+    //std::cout << "arr[0] " << arr[low] << std::endl;
+    double px = polar_coord_for_dot(x, l);
+    //std::cout << px << std::endl;
+
+    if (px < polar_coord_for_dot(arr.vertex[low], l)) {
+        //std::cout << "=)" <<std::endl;
         return -1;
     }
     int mid;
     while (low <= high) {
         mid = low + (high - low) / 2;
-        if (arr[mid] == x)
+        if (polar_coord_for_dot(arr.vertex[mid], l) == px)
             return mid;
-        else if (x < arr[mid]) {
+        else if (px < polar_coord_for_dot(arr.vertex[mid], l)) {
             high = mid - 1;
         } else {
             low = mid + 1;
         }
     }
-    /*
-    std::cout << "---------" << std::endl;
-    std::cout << x << std::endl;
-    std::cout <<"-1 " << arr[low-1] << std::endl;
-    std::cout << "0 " <<arr[low] << std::endl;
-    std::cout << arr[low+1] << std::endl;
-    std::cout << "+2 " << arr[low+2] << std::endl;
-    std::cout << " LOW IS: " << low << " " << high << std::endl;
-     */
+    //std::cout << "low is: " << low << std::endl;
+    //std::cout << "mid is: " << mid << std::endl;
+    //std::cout << "high is: " << high << std::endl;
     return low;
 }
 

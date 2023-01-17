@@ -27,7 +27,6 @@ int main() {
         dots.push_back(v);
     }
     std::vector<Vec> dots2;
-
     pol.Algorithm(pol, dots);
     return 0;
 }
